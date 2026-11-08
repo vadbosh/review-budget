@@ -53,9 +53,9 @@ Skill самостоятельный: другие skills и плагины ем
 
 ## Установка
 
-Из каталога с этим репозиторием:
-
 ```bash
+git clone https://github.com/vadbosh/review-budget
+cd review-budget
 ./install.sh            # во все ассистенты, найденные в ~/.claude, ~/.codex, ~/.config/opencode
 ./install.sh --dry-run  # показать, что будет записано
 ./install.sh --no-rule  # только skill, без правила-триггера

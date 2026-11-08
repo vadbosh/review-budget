@@ -52,9 +52,9 @@ The coordinator is the assistant session that dispatches the agents.
 
 ## Install
 
-From a checkout of this repository:
-
 ```bash
+git clone https://github.com/vadbosh/review-budget
+cd review-budget
 ./install.sh            # every assistant found under ~/.claude, ~/.codex, ~/.config/opencode
 ./install.sh --dry-run  # show what would be written
 ./install.sh --no-rule  # the skill only, without the trigger rule

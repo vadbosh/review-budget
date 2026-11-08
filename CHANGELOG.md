@@ -6,6 +6,11 @@ is tagged at the commit that introduced it.
 Releasing, in one commit: bump `version:`, add the section here, commit, then
 `./release.sh tag` and `git push --tags origin`. A tag is not moved afterwards.
 
+## 1.1.2 — 2026-11-08
+
+- **The README names the repository to clone**, now that it is published at
+  `github.com/vadbosh/review-budget`.
+
 ## 1.1.1 — 2026-11-08
 
 - **`release.sh check` reads shipped files whose path has a space.** The leak
