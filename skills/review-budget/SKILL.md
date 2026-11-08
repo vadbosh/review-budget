@@ -1,7 +1,7 @@
 ---
 name: review-budget
 description: Use when coordinating multi-task coding work with agents — running a plan task by task, reviewing each task, a final review, fix rounds — or a small change requested after such a run ended; when review, re-review and test cycles cost more wall-clock than the code; when the user has not said which models the reviewers and implementers get.
-version: "1.0.0"
+version: "1.0.1"
 ---
 
 # review-budget
@@ -10,7 +10,8 @@ Review and test runs are the slow part of agent-driven coding. One strong
 review per unit of work catches what a loop of re-reviews catches, in a
 fraction of the time. This skill is the whole procedure for such a run and
 needs no other skill. An explicit instruction from the user overrides it; it
-overrides any other guidance on review loops, re-reviews and test cadence.
+overrides any other guidance on review loops, re-reviews, test cadence and
+model choice.
 
 The **controller** is the session that coordinates. **Implementers**,
 **testers** and **reviewers** are agents it dispatches. No agent tool → the
@@ -34,14 +35,16 @@ option first:
 | Codex | `request_user_input`; not listed this turn → one plain question, numbered options | `model` (and `reasoning_effort`) on every `spawn_agent` call |
 | Opencode | `question` | `model` on every `subagent` call, `providerID/modelID` from the models tool. The tool has no `model` parameter → say once that all agents run on the session model |
 
-The answer holds for the whole run; never ask again. An omitted model
+The answer holds for the whole run; never ask again. It outranks any other
+rule for picking a model per task, per size or per round. An omitted model
 inherits the session model.
 
 **Ledger.** One file outside version control, e.g.
 `<repo>/.git/review-budget/<run>.md`. It holds the models, the dependency
 table, and one line per finished step with its commit. After a context reset,
 trust the ledger and `git log` over memory; never redo a step the ledger
-marks done.
+marks done. Another process already keeps a ledger for this run → write
+these lines into it; one run, one ledger.
 
 **Dependency table.** Per task: the files it touches, the interfaces it
 produces and consumes. Write it to the ledger. It decides section 3.
@@ -111,4 +114,5 @@ points.
 | "Another rule says never run implementers in parallel" | That rule guards shared files. Disjoint files, no shared interface → section 3. |
 | "Docs are a task in the plan, so an agent writes them" | The controller knows what changed; an agent has to be told. |
 | "Memory names one model, I pick the rest myself" | A role the instructions do not name gets the question. |
+| "The process skill says a transcription task takes the cheapest model" | The user's answer is the model for every dispatch of that role. |
 | "A request after the run deserves the full process" | A small change gets section 6; a new component, section 1. |

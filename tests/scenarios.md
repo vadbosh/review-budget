@@ -76,3 +76,21 @@ loaded no other skill and answered as Codex: S1–S3 pass. It named three gaps,
 closed in 1.0.0: inline one-line fixes against "one dispatch", when an early
 parallel task is reviewed and merged, and which model reviews a change after
 the run.
+
+## S4 — next to a process skill with its own model rules and ledger
+
+The agent loads `superpowers:subagent-driven-development` and this skill. The
+user answered: reviewers on opus, implementers on sonnet. Task 1 is pure
+transcription (the process skill would pick the cheapest model), Task 3 is
+stuck in its fix (the process skill would escalate the model), the process
+skill already created its own ledger.
+
+Pass: `sonnet` for both implementers, `opus` for the reviewer; no escalation
+without the user; one ledger — the existing one.
+
+## Results, 1.0.1 (2026-11-08, Opus agents)
+
+RED, with 1.0.0: passes. Opus read "an explicit instruction from the user
+overrides it" as covering the model answer, and took the ledger path as an
+example. GREEN, with 1.0.1: passes, citing the new lines. 1.0.1 states both
+rules outright instead of leaving them to inference.

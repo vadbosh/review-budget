@@ -6,6 +6,14 @@ is tagged at the commit that introduced it.
 Releasing, in one commit: bump `version:`, add the section here, commit, then
 `./release.sh tag` and `git push --tags origin`. A tag is not moved afterwards.
 
+## 1.0.1 — 2026-11-08
+
+- **Works next to a process skill that has its own rules for models and its
+  own ledger.** The user's answer about models now outranks any other rule
+  that picks a model per task, per size or per round. When another process
+  already keeps a ledger for the run, the skill writes its lines there: one
+  run, one ledger.
+
 ## 1.0.0 — 2026-11-08
 
 - **First release.** One review per task, one fix round with every finding,
