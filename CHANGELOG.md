@@ -6,6 +6,12 @@ is tagged at the commit that introduced it.
 Releasing, in one commit: bump `version:`, add the section here, commit, then
 `./release.sh tag` and `git push --tags origin`. A tag is not moved afterwards.
 
+## 1.1.1 — 2026-11-08
+
+- **`release.sh check` reads shipped files whose path has a space.** The leak
+  check passed the file list word-split; a `$HOME` with a space in it was read
+  as two paths that do not exist. The list is an array now.
+
 ## 1.1.0 — 2026-11-08
 
 - **A trigger rule loads the skill whenever work goes through agents.**
