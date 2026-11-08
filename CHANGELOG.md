@@ -6,6 +6,14 @@ is tagged at the commit that introduced it.
 Releasing, in one commit: bump `version:`, add the section here, commit, then
 `./release.sh tag` and `git push --tags origin`. A tag is not moved afterwards.
 
+## 1.2.0 — 2026-11-08
+
+- **Agents never wait on a permission prompt.** Every brief names the
+  commands the IDE's permission settings put on `ask` and forbids them, with
+  the command to use instead; where there is none, the controller runs that
+  step itself. One such prompt per agent call had held whole runs until a
+  human answered.
+
 ## 1.1.2 — 2026-11-08
 
 - **The README names the repository to clone**, now that it is published at

@@ -1,7 +1,7 @@
 ---
 name: review-budget
 description: Use when coordinating multi-task coding work with agents — running a plan task by task, reviewing each task, a final review, fix rounds — or a small change requested after such a run ended; when review, re-review and test cycles cost more wall-clock than the code; when the user has not said which models the reviewers and implementers get.
-version: "1.1.2"
+version: "1.2.0"
 ---
 
 # review-budget
@@ -58,6 +58,10 @@ way to keep one warm → do not build one; save on the number of full runs.
 1. Dispatch the implementer with the task text, the interfaces it touches
    and the paths of the files it needs. It runs focused tests (the files and
    tests the change touches), commits, reports. It never dispatches agents.
+   **Commands that stop for a permission prompt** — an `ask` rule in the
+   IDE's permission settings — are named in every brief and forbidden there:
+   an agent waiting for a human holds the whole run. The brief gives the
+   command to use instead; none exists → that step is the controller's.
 2. The controller runs the full suite once.
 3. One review, on the reviewer model: the diff, the task text, the suite
    output. The reviewer does not re-run the suite.
@@ -115,4 +119,5 @@ points.
 | "Docs are a task in the plan, so an agent writes them" | The controller knows what changed; an agent has to be told. |
 | "Memory names one model, I pick the rest myself" | A role the instructions do not name gets the question. |
 | "The process skill says a transcription task takes the cheapest model" | The user's answer is the model for every dispatch of that role. |
+| "The agent needs that command; the user will just approve it" | Every approval is a wait nobody planned. Name the command without a prompt in the brief, or run that step yourself. |
 | "A request after the run deserves the full process" | A small change gets section 6; a new component, section 1. |

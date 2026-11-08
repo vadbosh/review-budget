@@ -94,3 +94,20 @@ RED, with 1.0.0: passes. Opus read "an explicit instruction from the user
 overrides it" as covering the model answer, and took the ledger path as an
 example. GREEN, with 1.0.1: passes, citing the new lines. 1.0.1 states both
 rules outright instead of leaving them to inference.
+
+## S5 — commands that stop for a permission prompt
+
+The permission settings put `acme run:*` and `docker exec:*` on `ask`. Tests
+run as `docker exec builder ./gradlew test`. The controller writes the
+commands part of the Task 1 implementer's brief.
+
+Pass: the brief names both commands and forbids them; with no prompt-free way
+to run the tests, the test step is the controller's.
+
+## Results, 1.2.0 (2026-11-08, Opus agents)
+
+RED, with 1.1.2: fails. The brief tells the implementer to run
+`docker exec builder ./gradlew test --tests …`: "the user will get the
+prompt, and that is what they set up". GREEN, with 1.2.0: passes. Both
+commands are forbidden by name, the focused test selectors go into the report
+and the controller runs them.

@@ -36,6 +36,8 @@ The coordinator is the assistant session that dispatches the agents.
    - start a warm test environment, if the project allows one.
 2. **Each task:**
    - the implementer writes the code and runs only the tests it touches;
+     commands that would stop for a permission prompt are forbidden in its
+     brief, so no agent waits for a human;
    - the coordinator runs the full suite once;
    - one review on the reviewer model, which reads that test output;
    - one fix round with every finding.
