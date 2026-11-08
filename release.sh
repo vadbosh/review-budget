@@ -2,6 +2,7 @@
 # Release checks for the review-budget skill.
 #
 #   ./release.sh check     version ↔ changelog ↔ tag ↔ HEAD ↔ installed copies
+#                          of the skill and of the trigger rule
 #   ./release.sh tag       create the tag for the current version
 #
 # The three sources of "which version is this" drift independently — the field
@@ -95,6 +96,25 @@ shipped_leaks() {
 
 shipped_paths() { while read -r f; do printf '%s ' "$SRC/skills/review-budget/$f"; done < <(shipped); }
 
+# The rule ships with the skill and drifts on its own: an edit in one
+# assistant's copy changes when the skill loads there and nowhere else.
+rule_copies() {
+    local r="$SRC/rules/review-budget-trigger.md" d n=0 bad=0
+    for d in "$HOME/.claude/rules" "$HOME/.config/opencode/instructions" "$HOME/.codex/memories"; do
+        [ -f "$d/review-budget-trigger.md" ] || continue
+        n=$((n + 1))
+        cmp -s "$r" "$d/review-budget-trigger.md" && continue
+        [ "$bad" -eq 0 ] && echo "  rule copies differing from rules/:"
+        bad=1
+        echo "    $(tilde "$d")/review-budget-trigger.md"
+    done
+    if [ "$bad" -eq 1 ]; then
+        echo "                    ./install.sh refreshes them"
+        return 1
+    fi
+    echo "  rule copies:       $n, all match rules/"
+}
+
 check() {
     local v problems=0
     v="$(version)"
@@ -148,6 +168,7 @@ check() {
     fi
 
     shipped_leaks || problems=1
+    rule_copies || problems=1
     copies "$v" || problems=1
 
     if [ "$problems" -eq 0 ]; then

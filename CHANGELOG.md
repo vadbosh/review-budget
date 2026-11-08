@@ -6,6 +6,16 @@ is tagged at the commit that introduced it.
 Releasing, in one commit: bump `version:`, add the section here, commit, then
 `./release.sh tag` and `git push --tags origin`. A tag is not moved afterwards.
 
+## 1.1.0 — 2026-11-08
+
+- **A trigger rule loads the skill whenever work goes through agents.**
+  `rules/review-budget-trigger.md` goes to `~/.claude/rules`,
+  `~/.config/opencode/instructions` (with an entry in `opencode.json`
+  `instructions[]`) and `~/.codex/memories` (with an `@`-reference in
+  `~/.codex/AGENTS.md`). Before, the skill loaded only by its description,
+  which was checked once and in Claude Code only. `./install.sh --no-rule`
+  installs the skill alone; `./release.sh check` compares the rule copies too.
+
 ## 1.0.1 — 2026-11-08
 
 - **Works next to a process skill that has its own rules for models and its

@@ -57,10 +57,13 @@ From a checkout of this repository:
 ```bash
 ./install.sh            # every assistant found under ~/.claude, ~/.codex, ~/.config/opencode
 ./install.sh --dry-run  # show what would be written
+./install.sh --no-rule  # the skill only, without the trigger rule
 ```
 
-Then say `/review-budget` (`$review-budget` in Codex) before a run, or let the
-assistant load it when it starts coordinating agents.
+The installer also adds a trigger rule, `rules/review-budget-trigger.md`. It
+tells the assistant to load the skill whenever work goes through agents, also
+when another process skill was loaded first. Without the rule, say
+`/review-budget` (`$review-budget` in Codex) before a run.
 
 ## Models by assistant
 

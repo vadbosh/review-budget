@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
-# Install the review-budget skill — Linux / macOS.
+# Install the review-budget skill and its trigger rule — Linux / macOS.
 #
 # The skill is Markdown and nothing else: no binary, no PATH entry,
-# no runtime. Installing it is a copy into each assistant's skills directory.
+# no runtime. Installing it is a copy into each assistant's skills directory,
+# plus the trigger rule (rules/review-budget-trigger.md), wired by lib/wire.py.
 #
 #   ./install.sh                 install into every assistant found
 #   ./install.sh --dry-run       print what would happen, change nothing
-#   ./install.sh --skills-dir D  install into D instead of auto-detecting
+#   ./install.sh --no-rule       the skill only, without the trigger rule
+#   ./install.sh --skills-dir D  install the skill into D, no rule
 #
 # Idempotent: re-running replaces only what changed. A file it overwrites is
 # copied to ~/.local/state/review-budget-backups ONLY when that content is not
@@ -37,10 +39,12 @@ backup_file() {
 }
 
 DRY_RUN=0
+NO_RULE=0
 SKILLS_DIR=""
 while [ $# -gt 0 ]; do
     case "$1" in
         --dry-run)    DRY_RUN=1 ;;
+        --no-rule)    NO_RULE=1 ;;
         # An empty value must not fall back to auto-detection: a wrapper passing
         # an unset variable would install into every assistant on the machine.
         --skills-dir)
@@ -48,7 +52,7 @@ while [ $# -gt 0 ]; do
                 echo "--skills-dir needs a path" >&2; exit 2
             fi
             SKILLS_DIR="$2"; shift ;;
-        -h|--help)    sed -n '2,14p' "${BASH_SOURCE[0]}" | sed 's/^# \?//'; exit 0 ;;
+        -h|--help)    sed -n '2,17p' "${BASH_SOURCE[0]}" | sed 's/^# \?//'; exit 0 ;;
         *) echo "unknown option: $1" >&2; exit 2 ;;
     esac
     shift
@@ -157,6 +161,32 @@ while read -r dir; do
         rc=1
     fi
 done < <(detect_skill_dirs)
+
+# The rule makes the skill load when work goes through agents, also next to
+# another process skill whose description matches first. Not with
+# --skills-dir: a custom directory says nothing about which assistant reads it,
+# so there is no configuration to wire.
+if [ -z "$SKILLS_DIR" ] && [ "$NO_RULE" -eq 0 ]; then
+    say "── trigger rule ──"
+    if ! command -v python3 >/dev/null 2>&1; then
+        warn "  python3 not found — rule not installed; the skill loads by its description or by name"
+        rc=1
+    else
+        for ide in claude opencode codex; do
+            args=("$ide" --src "$SRC")
+            [ "$DRY_RUN" -eq 1 ] && args+=(--dry-run)
+            set +e
+            python3 "$SRC/lib/wire.py" "${args[@]}"
+            wrc=$?
+            set -e
+            case "$wrc" in
+                0) ok "  ok — $ide" ;;
+                3) ;;  # assistant not installed
+                *) warn "  FAILED — $ide, see the message above"; rc=1 ;;
+            esac
+        done
+    fi
+fi
 
 say ""
 say '  In your assistant: /review-budget before a multi-task run ($review-budget in Codex).'
