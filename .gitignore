@@ -10,7 +10,7 @@
 # Findings from a cold review (`review-YYYY-MM-DD-<object>.md`, written by the
 # audit skill). A work order, true on its date and meaningless once the items
 # land; what it produced belongs in CHANGELOG.md and in kb/.
-review-*.md
+/review-*.md
 
 # Session memory written by the assistant tooling.
 .memsearch/

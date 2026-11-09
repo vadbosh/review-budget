@@ -1,7 +1,7 @@
 ---
 name: review-budget
 description: Use when coordinating multi-task coding work with agents — running a plan task by task, reviewing each task, a final review, fix rounds — or a small change requested after such a run ended; when review, re-review and test cycles cost more wall-clock than the code; when the user has not said which models the reviewers and implementers get.
-version: "1.2.0"
+version: "1.2.1"
 ---
 
 # review-budget

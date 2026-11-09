@@ -6,6 +6,14 @@ is tagged at the commit that introduced it.
 Releasing, in one commit: bump `version:`, add the section here, commit, then
 `./release.sh tag` and `git push --tags origin`. A tag is not moved afterwards.
 
+## 1.2.1 — 2026-11-09
+
+- **The trigger rule is in the repository.** `rules/review-budget-trigger.md`
+  matched the `.gitignore` pattern `review-*.md`, meant for cold-review files at
+  the root, and was never committed. A fresh clone installed the skill and
+  failed to wire the rule in all three IDEs with `No such file or directory`.
+  The pattern is anchored to the root now: `/review-*.md`.
+
 ## 1.2.0 — 2026-11-08
 
 - **Agents never wait on a permission prompt.** Every brief names the
