@@ -117,6 +117,28 @@ rule_copies() {
     echo "  rule copies:       $n, all match rules/"
 }
 
+# Everything above reads the working tree, and a clone gets only what HEAD
+# holds. rules/review-budget-trigger.md matched a .gitignore pattern meant for
+# something else, was never committed, and every check here passed while a
+# fresh clone failed to wire the rule in all three assistants (1.2.1).
+committed() {
+    local f p missing=()
+    while read -r f; do
+        p="skills/review-budget/${f#./}"
+        git -C "$SRC" cat-file -e "HEAD:$p" 2>/dev/null || missing+=("$p")
+    done < <(shipped)
+    for p in rules/review-budget-trigger.md lib/wire.py install.sh; do
+        git -C "$SRC" cat-file -e "HEAD:$p" 2>/dev/null || missing+=("$p")
+    done
+    if [ "${#missing[@]}" -gt 0 ]; then
+        echo "  shipped files not in HEAD — a clone does not get them:"
+        printf '    %s\n' "${missing[@]}"
+        echo "                    git check-ignore -v <path> says why; git add it"
+        return 1
+    fi
+    echo "  shipped files:    all in HEAD"
+}
+
 check() {
     local v problems=0
     v="$(version)"
@@ -171,6 +193,7 @@ check() {
 
     shipped_leaks || problems=1
     rule_copies || problems=1
+    committed || problems=1
     copies "$v" || problems=1
 
     if [ "$problems" -eq 0 ]; then

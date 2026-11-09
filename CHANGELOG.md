@@ -6,6 +6,13 @@ is tagged at the commit that introduced it.
 Releasing, in one commit: bump `version:`, add the section here, commit, then
 `./release.sh tag` and `git push --tags origin`. A tag is not moved afterwards.
 
+## 1.2.2 — 2026-11-09
+
+- **`release.sh check` fails when a shipped file is not in HEAD.** Every other
+  check reads the working tree, so the uncommitted trigger rule fixed in 1.2.1
+  passed as `agreed and released`. The skill files, the rule, `lib/wire.py`
+  and `install.sh` are now looked up in HEAD — what a clone actually gets.
+
 ## 1.2.1 — 2026-11-09
 
 - **The trigger rule is in the repository.** `rules/review-budget-trigger.md`
