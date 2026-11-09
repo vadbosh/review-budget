@@ -6,6 +6,12 @@ is tagged at the commit that introduced it.
 Releasing, in one commit: bump `version:`, add the section here, commit, then
 `./release.sh tag` and `git push --tags origin`. A tag is not moved afterwards.
 
+## 1.2.3 — 2026-11-09
+
+- **`.gitignore`: the ai-gitignore block refreshed.** `CHANGE.md`,
+  `PREREQUISITES.md`, `*-skill/` and `tmp/` are ignored only at the root now,
+  and the duplicate `.codeium/` is gone. Nothing that ships changed.
+
 ## 1.2.2 — 2026-11-09
 
 - **`release.sh check` fails when a shipped file is not in HEAD.** Every other
