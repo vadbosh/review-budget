@@ -6,6 +6,30 @@ is tagged at the commit that introduced it.
 Releasing, in one commit: bump `version:`, add the section here, commit, then
 `./release.sh tag` and `git push --tags origin`. A tag is not moved afterwards.
 
+## 1.3.0 — 2026-11-10
+
+- **The question at the start asks for effort as well as the model.** Each
+  option is a tier and an effort level: reviewers default to the strongest
+  tier at high, implementers to the mid tier at medium. The answer is passed
+  as `effort` on `Agent` in Claude Code, `reasoning_effort` on `spawn_agent`
+  in Codex, and `providerID/modelID#variant` in Opencode, with the variant
+  taken from the models tool. Before, the effort was each IDE's default, which
+  nobody chose.
+- **A migration, performance work or a large refactor is offered the
+  strongest tier.** The mid tier fits tasks built against a written spec; a
+  plan with such a task gets the recommended option "mid tier, medium;
+  strongest for T5", with the tasks named.
+- **A test-log reader.** A suite log longer than a screen is read by an agent
+  on the cheapest tier, which returns each failure as file, test name and
+  first error line. The controller's context and the next dispatch get that
+  list, not the log. With the answer "none", the controller reads the log
+  itself.
+
+The three changes come from "Which Claude model should you build with?" on
+the claude.dev blog, 2026-11-09. It advises raising effort before a bigger
+model, the strongest model for migrations and performance work, and cheaper
+subagents for verbose reading.
+
 ## 1.2.3 — 2026-11-09
 
 - **`.gitignore`: the ai-gitignore block refreshed.** `CHANGE.md`,

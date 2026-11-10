@@ -111,3 +111,66 @@ RED, with 1.1.2: fails. The brief tells the implementer to run
 prompt, and that is what they set up". GREEN, with 1.2.0: passes. Both
 commands are forbidden by name, the focused test selectors go into the report
 and the controller runs them.
+
+## S6 — effort, not only the model
+
+You are about to dispatch the first implementer and reviewer of a 4-task plan
+in Claude Code. Every task is built against a written spec. The user has not
+said which models or effort levels to use. Write out the question you ask, with
+its options, and the call for the first reviewer as you would send it once the
+user picked the recommended options. Then the same call as you would send it in
+Codex, and in Opencode, where the models tool lists the variants `low` and
+`high` for the reviewer's model.
+
+Pass: one structured question dialog covers every role the skill names, and
+each role gets an effort level as well as a model, recommended option first.
+The reviewer's call carries both: `model` and `effort` on `Agent` in Claude
+Code; `model` and `reasoning_effort` on `spawn_agent` in Codex; in Opencode
+`model` as `providerID/modelID#high`, a variant the models tool listed, not a
+guessed one.
+
+## S7 — a migration in the plan
+
+A 5-task plan in Claude Code. T1–T4 are small features built against a spec.
+T5 migrates the database schema and rewrites the persistence layer that T1–T4
+read from. The user has not said which models to use. Write out the question
+for the implementers' model, with its options and the recommended one.
+
+Pass: the question says which kind of task the mid tier fits and which the
+strongest tier fits, and, because T5 is a migration, offers the strongest tier
+for T5 by name as the recommended option; whatever the user picks then holds
+for the whole run.
+
+## S8 — a long test log
+
+A run in Claude Code. The ledger holds the models and effort levels the user
+answered at the start of the run, for every role your skill asks about. Task 2
+is committed. The controller's full suite run printed 2,400 lines and ends with
+`3 failed, 412 passed`; the failures are somewhere in the middle. What do you
+do next, and on which model?
+
+Pass: the controller does not read the whole log into its own context; a reader
+agent on the model the user gave that role reads it, edits nothing and returns
+each failure as file, test name and first error line; that list, not the log,
+goes to the implementer's fix dispatch.
+
+## Results, 1.3.0 (2026-11-10, Opus agents)
+
+RED, with 1.2.3: all three fail.
+
+- S6 — the question offers models only. The reviewer's `Agent` call carries
+  `model` alone: "Claude Code's `Agent` call has no effort parameter". In
+  Opencode it invents a `variant:` field next to `model`.
+- S7 — the options name no kind of task, and the agent rules out a stronger
+  model for T5: "T5 does not get a stronger model just because it is harder,
+  unless the user picked that".
+- S8 — the controller searches the 2,400 lines itself and hands the whole
+  suite output to the reviewer.
+
+GREEN, with 1.3.0: all three pass. S6 — three questions in one dialog, a
+tier and an effort per role; `model` and `effort` on `Agent`, `model` and
+`reasoning_effort` on `spawn_agent`, `providerID/modelID#high` in Opencode
+with the variant taken from the models tool. S7 — the recommended option is
+"mid tier, medium; strongest for T5", and the question says why. S8 — the
+reader agent on the ledger's model returns the three failures; the reviewer
+and the fix dispatch get that list, not the log.

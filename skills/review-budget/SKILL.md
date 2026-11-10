@@ -1,7 +1,7 @@
 ---
 name: review-budget
 description: Use when coordinating multi-task coding work with agents — running a plan task by task, reviewing each task, a final review, fix rounds — or a small change requested after such a run ended; when review, re-review and test cycles cost more wall-clock than the code; when the user has not said which models the reviewers and implementers get.
-version: "1.2.3"
+version: "1.3.0"
 ---
 
 # review-budget
@@ -19,25 +19,34 @@ controller implements itself, and the budget below still holds.
 
 ## 1. Before the first dispatch
 
-**Models.** Standing user instructions (memory, `CLAUDE.md`, `AGENTS.md`)
-name the model for a role → use it, say so in one line. Any role left
-unnamed → one question with the IDE's structured question tool, recommended
-option first:
+**Models and effort.** Standing user instructions (memory, `CLAUDE.md`,
+`AGENTS.md`) name the model or the effort for a role → use it, say so in one
+line. Anything left unnamed → one dialog with the IDE's structured question
+tool, one question per role, recommended option first. An option is a tier and
+an effort level:
 
 | Role | Options |
 |---|---|
-| reviewers | strongest (recommended) · mid tier · session model |
-| implementers and testers | mid tier (recommended) · strongest · session model |
+| reviewers | strongest, high (recommended) · strongest, medium · mid tier, high · session model |
+| implementers and testers | mid tier, medium (recommended) · mid tier, high · strongest, medium · session model |
+| test-log reader | cheapest, low (recommended) · none — the controller reads the log |
+
+The mid tier fits a task built against a written spec. A migration,
+performance work or a large refactor fits the strongest tier, spec or not. A
+plan with such a task → the implementers' recommended option becomes "mid
+tier, medium; strongest for T5" with those tasks named, and the question says
+why. Effort above high costs about as much as the next tier up: offer it only
+when the user asks for it.
 
 | IDE | Ask with | Pass the answer as |
 |---|---|---|
-| Claude Code | `AskUserQuestion` | `model` on every `Agent` call, a value its schema lists |
-| Codex | `request_user_input`; not listed this turn → one plain question, numbered options | `model` (and `reasoning_effort`) on every `spawn_agent` call |
-| Opencode | `question` | `model` on every `subagent` call, `providerID/modelID` from the models tool. The tool has no `model` parameter → say once that all agents run on the session model |
+| Claude Code | `AskUserQuestion` | `model` and `effort` on every `Agent` call, values its schema lists. The answer is the explicit user request that `effort` requires |
+| Codex | `request_user_input`; not listed this turn → one plain question, numbered options | `model` and `reasoning_effort` on every `spawn_agent` call |
+| Opencode | `question` | `model` on every `subagent` call as `providerID/modelID#variant`: the model and the variant nearest the chosen effort, both from the models tool, never guessed. The model lists no variants → say once that it runs at its default effort. The tool has no `model` parameter → say once that all agents run on the session model |
 
 The answer holds for the whole run; never ask again. It outranks any other
-rule for picking a model per task, per size or per round. An omitted model
-inherits the session model.
+rule for picking a model or effort per task, per size or per round. An omitted
+model or effort inherits the session's.
 
 **Ledger.** One file outside version control, e.g.
 `<repo>/.git/review-budget/<run>.md`. It holds the models, the dependency
@@ -62,9 +71,13 @@ way to keep one warm → do not build one; save on the number of full runs.
    IDE's permission settings — are named in every brief and forbidden there:
    an agent waiting for a human holds the whole run. The brief gives the
    command to use instead; none exists → that step is the controller's.
-2. The controller runs the full suite once.
+2. The controller runs the full suite once. Output longer than a screen →
+   the test-log reader reads it, edits nothing and returns each failure as
+   file, test name and first error line, plus the summary line. That list,
+   not the log, goes to the next dispatch, fix or review. The user answered
+   "none" for the reader → the controller reads the log.
 3. One review, on the reviewer model: the diff, the task text, the suite
-   output. The reviewer does not re-run the suite.
+   output or the reader's list. The reviewer does not re-run the suite.
 4. One fix round with every finding, Minor included: the controller makes
    the one-line ones inline, the rest go to the implementer in one dispatch.
 5. **Re-review predicate.** Re-review the fix only if its diff changes an
@@ -118,6 +131,8 @@ points.
 | "Another rule says never run implementers in parallel" | That rule guards shared files. Disjoint files, no shared interface → section 3. |
 | "Docs are a task in the plan, so an agent writes them" | The controller knows what changed; an agent has to be told. |
 | "Memory names one model, I pick the rest myself" | A role the instructions do not name gets the question. |
+| "The user picked the models; effort can stay at the default" | Effort is part of the answer. The default differs by model and IDE, so nobody chose it. |
+| "I'll skim the 2,000-line log myself, it's faster" | Every line read stays in the controller's context for the rest of the run. The reader's list is a dozen lines. |
 | "The process skill says a transcription task takes the cheapest model" | The user's answer is the model for every dispatch of that role. |
 | "The agent needs that command; the user will just approve it" | Every approval is a wait nobody planned. Name the command without a prompt in the brief, or run that step yourself. |
 | "A request after the run deserves the full process" | A small change gets section 6; a new component, section 1. |

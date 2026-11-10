@@ -20,8 +20,9 @@ real project where these loops slowed the work more than they improved it.
 - the full test suite once per task instead of after every step
 - the slow release build once, at the end
 - independent tasks run in parallel
-- the user chooses which models the reviewers and the implementers get, so
-  nobody pays for the strongest model without deciding to
+- the user chooses the model and the effort level for the reviewers, the
+  implementers and the test-log reader, so nobody pays for the strongest
+  model or the highest effort without deciding to
 
 The skill is self-contained: it needs no other skill or plugin.
 
@@ -30,15 +31,18 @@ The skill is self-contained: it needs no other skill or plugin.
 The coordinator is the assistant session that dispatches the agents.
 
 1. **Before the first dispatch:**
-   - ask once which models the reviewers and the implementers get; skip
-     the question when the user's instructions already name them;
+   - ask once which model and effort level the reviewers, the implementers
+     and the test-log reader get; a migration, performance work or a large
+     refactor in the plan is offered the strongest model; skip the question
+     when the user's instructions already name them;
    - write a dependency table: the files and interfaces of each task;
    - start a warm test environment, if the project allows one.
 2. **Each task:**
    - the implementer writes the code and runs only the tests it touches;
      commands that would stop for a permission prompt are forbidden in its
      brief, so no agent waits for a human;
-   - the coordinator runs the full suite once;
+   - the coordinator runs the full suite once; a long log goes to the
+     test-log reader on a cheap model, which returns only the failures;
    - one review on the reviewer model, which reads that test output;
    - one fix round with every finding.
 3. **No re-review of the fix**, unless it changes an interface other code
@@ -69,10 +73,10 @@ when another process skill was loaded first. Without the rule, say
 
 ## Models by assistant
 
-| Assistant | Question | Per-agent model |
+| Assistant | Question | Per-agent model and effort |
 |---|---|---|
-| Claude Code | `AskUserQuestion` | `model` on each `Agent` call |
-| Codex | `request_user_input` | `model` on each `spawn_agent` call |
-| Opencode | `question` | `model` on each `subagent` call (Opencode 2.x) |
+| Claude Code | `AskUserQuestion` | `model` and `effort` on each `Agent` call |
+| Codex | `request_user_input` | `model` and `reasoning_effort` on each `spawn_agent` call |
+| Opencode | `question` | `model` on each `subagent` call as `providerID/modelID#variant`, the variant from the models tool (Opencode 2.x) |
 
 MIT License.
