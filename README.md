@@ -24,7 +24,9 @@ real project where these loops slowed the work more than they improved it.
   implementers and the test-log reader, so nobody pays for the strongest
   model or the highest effort without deciding to
 
-The skill is self-contained: it needs no other skill or plugin.
+The skill is self-contained: it needs no other skill or plugin. It does not
+replace a process skill that runs plans with agents: both load. This one
+decides only the number of reviews, test runs and the models.
 
 ## Algorithm
 

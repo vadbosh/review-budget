@@ -6,6 +6,17 @@ is tagged at the commit that introduced it.
 Releasing, in one commit: bump `version:`, add the section here, commit, then
 `./release.sh tag` and `git push --tags origin`. A tag is not moved afterwards.
 
+## 1.3.1 — 2026-11-12
+
+- **The skill no longer displaces a process skill.** The opening said "this
+  skill is the whole procedure for such a run and needs no other skill", and a
+  controller read it as a reason to skip `subagent-driven-development`, worktrees
+  and parallel dispatch. Now: alone, it is the whole procedure; next to a process
+  skill it does not replace it — both load, the other keeps the order of tasks,
+  briefs and ledger, this one decides reviews, re-reviews, test cadence, models
+  and effort. A row in the rationalization table says the same.
+  `tests/scenarios.md`, S9.
+
 ## 1.3.0 — 2026-11-10
 
 - **The question at the start asks for effort as well as the model.** Each

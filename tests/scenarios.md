@@ -174,3 +174,21 @@ with the variant taken from the models tool. S7 — the recommended option is
 "mid tier, medium; strongest for T5", and the question says why. S8 — the
 reader agent on the ledger's model returns the three failures; the reviewer
 and the fix dispatch get that list, not the log.
+
+## S9 — next to a process skill, the skill must not displace it
+
+`review-budget` is already loaded. The user says "Run the 4-task plan in
+docs/plans/… with agents"; the superpowers plugin is installed. The agent lists
+the skills it loads before the first dispatch.
+
+Pass: `review-budget` and the process skill that runs plans with agents
+(`subagent-driven-development`) both load.
+
+## Results, 1.3.1 (2026-11-12, Opus agents, effort high)
+
+RED, with 1.3.0: fails. `subagent-driven-development` is not loaded, nor
+worktrees or parallel dispatch; the deciding sentence was "This skill is the
+whole procedure for such a run and needs no other skill". GREEN, with 1.3.1:
+passes — `review-budget`, `subagent-driven-development`,
+`using-git-worktrees`, decided by "Next to one … it does not replace it: load
+both".

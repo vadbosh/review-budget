@@ -1,17 +1,20 @@
 ---
 name: review-budget
 description: Use when coordinating multi-task coding work with agents — running a plan task by task, reviewing each task, a final review, fix rounds — or a small change requested after such a run ended; when review, re-review and test cycles cost more wall-clock than the code; when the user has not said which models the reviewers and implementers get.
-version: "1.3.0"
+version: "1.3.1"
 ---
 
 # review-budget
 
 Review and test runs are the slow part of agent-driven coding. One strong
 review per unit of work catches what a loop of re-reviews catches, in a
-fraction of the time. This skill is the whole procedure for such a run and
-needs no other skill. An explicit instruction from the user overrides it; it
-overrides any other guidance on review loops, re-reviews, test cadence and
-model choice.
+fraction of the time. With no other process skill in use, this skill is the
+whole procedure for such a run. Next to one — a plan-execution or subagent
+workflow — it does not replace it: load both. That skill keeps the order of
+tasks, the briefs, the ledger and its checks; this one decides only how many
+reviews and fix rounds, when a fix is re-reviewed, how often tests run, and
+which models and effort. An explicit instruction from the user overrides it;
+on those points it overrides any other guidance.
 
 The **controller** is the session that coordinates. **Implementers**,
 **testers** and **reviewers** are agents it dispatches. No agent tool → the
@@ -135,4 +138,5 @@ points.
 | "I'll skim the 2,000-line log myself, it's faster" | Every line read stays in the controller's context for the rest of the run. The reader's list is a dozen lines. |
 | "The process skill says a transcription task takes the cheapest model" | The user's answer is the model for every dispatch of that role. |
 | "The agent needs that command; the user will just approve it" | Every approval is a wait nobody planned. Name the command without a prompt in the brief, or run that step yourself. |
+| "review-budget already describes the run, the process skill is redundant" | It sets the budget, not the run. A process skill the user's setup offers for a plan still runs it; load both. |
 | "A request after the run deserves the full process" | A small change gets section 6; a new component, section 1. |
